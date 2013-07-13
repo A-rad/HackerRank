@@ -2,10 +2,7 @@
 use POSIX;
 
 ########## global variables ####################
-$usage = "\nUsage: \.\/make_2D_histogram\.pl  [data file]  [y-column] [y-min] [y-max] [y-resolution]  [x-column] [x-min] [x-max] [x-resolution] [TimeCut] [outputFileName]\n
-\t\[Note 1\: be sure to subtract 1 from each desired column number\] 
-\t\[Note 2\: resolutions should be given as a fraction of an integer, such as \"0.5\", which would be the bin width\]
-\n";
+$usage = "\nUsage: \.\/make_2D_histogram\.pl  [data file]  [y-column] [y-min] [y-max] [y-resolution]  [x-column] [x-min] [x-max] [x-resolution] [TimeCut] [outputFileName]\n";
 
 $data  = $ARGV[0] || die "$usage\n";
 $Ycol  = $ARGV[1] || die "$usage\n";
@@ -20,8 +17,8 @@ $TimeCut = $ARGV[9] || die "$usage\n";
 $output = $ARGV[10] || die "$usage\n";
 
 
-$maxX = floor((($Xmax - $Xmin)/$Xres));
-$maxY = floor((($Ymax - $Ymin)/$Yres));
+$maxX = (($Xmax - $Xmin)/$Xres);
+$maxY = (($Ymax - $Ymin)/$Yres);
 
 
 ##  Initializing
@@ -39,8 +36,9 @@ while ($line = <INP>) {
     for($line) { s/^\s+//;s/\s+$//; s/\s+/ /g; }
     @lines = split(/ /,$line);
     if ($lines[3]>=$TimeCut){ #specify column where time is located
-        $x = (($lines[$Xcol] - $Xmin)/$Xres) + 0.5;
-        $y = (($lines[$Ycol] - $Ymin)/$Yres) + 0.5;
+        print "$lines[$Ycol]     and     $lines[$Xcol]\n";
+        $x = (($lines[$Xcol] - $Xmin)/$Xres);
+        $y = (($lines[$Ycol] - $Ymin)/$Yres);
         $newx = floor($x);
         $newy = floor($y);
         $BIN{"$newy:$newx"}++;
@@ -48,9 +46,6 @@ while ($line = <INP>) {
     }
 }
 close(INP);
-$totdat = $totaldata;
-print STDOUT "Total data points read = $totdat\n\n";
-
 
 ### and print out the resulting matrix  ###
 open(OUT,">$output");
@@ -58,10 +53,10 @@ open(OUT,">$output");
 for ($yy=0;$yy<$maxY;$yy++) {
   for ($xx=0;$xx<$maxX;$xx++) {
       printf OUT "%8d", $BIN{"$yy:$xx"};
-      print "$BIN{\"$yy:$xx\"}\t";
+      #print "$BIN{\"$yy:$xx\"}\t";
   } 
   print OUT "\n";
-  print "\n";
+    #print "\n";
 }
 print "\n";
 close(OUT);
