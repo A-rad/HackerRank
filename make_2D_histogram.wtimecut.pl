@@ -38,9 +38,9 @@ while ($line = <INP>) {
     chomp $line;
     for($line) { s/^\s+//;s/\s+$//; s/\s+/ /g; }
     @lines = split(/ /,$line);
-    if (int($lines[3])>=int($TimeCut)){ #specify column where time is located
-        $x = (($lines[$Xcol] - $Xmin)/$Xres);
-        $y = (($lines[$Ycol] - $Ymin)/$Yres);
+    if ($lines[3]>=$TimeCut){ #specify column where time is located
+        $x = (($lines[$Xcol] - $Xmin)/$Xres) + 0.5;
+        $y = (($lines[$Ycol] - $Ymin)/$Yres) + 0.5;
         $newx = floor($x);
         $newy = floor($y);
         $BIN{"$newy:$newx"}++;
